@@ -22,21 +22,28 @@ Second, one-on-one tutors don't exist -- only classes.
 
 // config
 int lastUpdateTime;
-int tickTime = 1000;
-int avgClassSize = 25; // each class is between (avgClassSize - classSizeDev)
+int tickTime = 100;
+int avgClassSize = 20; // each class is between (avgClassSize - classSizeDev)
 int classSizeDev = 10;  //                   and (avgClassSize + classSizeDev)
 int minClassSize = avgClassSize - classSizeDev;
 int maxClassSize = avgClassSize + classSizeDev;
-int maxPeople = 200; // must be greater than maxClassSize
+int maxPeople = 10; // must be greater than maxClassSize
 
-int pctOfStudentsWhoTeach = 20; // (out of 100) percentage of people who are both students and teachers
+int pctOfStudentsWhoTeach = 10; // (out of 100) percentage of people who are both students and teachers
+
+// how far +- is a student away from a teacher
+int positionDev = 15;
+int personSize = 5;
 
 // the world contains a list of Persons, but throughout the program
 // each Person will often be referred to by its index in world
 ArrayList<Person> world = new ArrayList<Person>();
 
+// a list of people (in the form of world indices) who will be infected in the next tick
+ArrayList<Integer> toBeInfected = new ArrayList<Integer>();
+
 void setup() {
-  size(480, 480);
+  size(600, 600);
   generateWorld();
   lastUpdateTime = millis(); // get current time
 }  
@@ -44,6 +51,7 @@ void setup() {
 void draw() {
   update();
   clear();
+  drawPeople();
 }
 
 void update() {
@@ -54,13 +62,15 @@ void update() {
 }
 
 void tick() {
-  
+  //infectNextPeople();
+  //printWorld();
 }
 
 void generateWorld () {
   
   // first person, has no students (yet) and no teachers (ever)
   Person firstPerson = new Person();
+  firstPerson.setPosition(randInt(0, width), randInt(0, height));
   
   ArrayList<Integer> firstStudents = generateStudentsForTeacher(firstPerson, randInt(minClassSize, maxClassSize));
   ArrayList<Integer> newestStudents = possiblyMakeStudentsOfStudents(firstStudents);
@@ -76,7 +86,8 @@ void generateWorld () {
     newestStudents = tempStudents;
     potentialWorldSize = world.size() + newestStudents.size();
   }
-  printWorld();
+  infectRandom();
+  //printWorld();
 }
 
 ArrayList<Integer> generateStudentsForTeacher(Person teacher, int numStudents) {
@@ -114,8 +125,7 @@ ArrayList<Integer> makeStudentsOf (int teacher, int num) {
   ArrayList<Integer> students = new ArrayList<Integer>();
   
   for (int i = 0; i < num; i++) {
-    Person newStudent = new Person();
-    newStudent.addTeacher(teacher);
+    Person newStudent = new Person(teacher);
     students.add(newStudent.index);
   }
   
@@ -123,67 +133,32 @@ ArrayList<Integer> makeStudentsOf (int teacher, int num) {
   
 }
 
-/***********\
-* UTILITIES *
-\***********/
-
-boolean percentDieRoll (int chanceOutOf100) {
-  return int(100 * random(1)) <= chanceOutOf100;
+void infect (int p) {
+  Person person = world.get(p);
+  person.infected = true;
+  //if (toBeInfected.contains(p)) {
+  //  toBeInfected.remove(p); 
+  //}
+  toBeInfected.clear();
+  toBeInfected.add(person.teacher);
+  toBeInfected.addAll(person.students);
 }
 
-int randInt (int lo, int hi) {
-  return int(random(lo, hi + 1));
-}
-
-void printWorld() {
-  for (Person p : world) {
-   println(p); 
+void infectNextPeople() {
+  ArrayList<Integer> tempToBeInfected = new ArrayList<Integer>();
+  for (int p : toBeInfected) {
+    tempToBeInfected.add(p);
+  }
+  for (int p : tempToBeInfected) {
+    infect(p);
   }
 }
 
+void infectRandom() {
+  infect(randInt(0, world.size() - 1));
+}
 
-
-
-
-class Person {
-  
-  ArrayList<Integer> teachers = new ArrayList<Integer>(); // teachers and students are stored as a list of indices
-  ArrayList<Integer> students = new ArrayList<Integer>(); // see above ;)
-  boolean infected;
-  int id = int(10000 + random(1) * 90000);
-  int index;
-  String SITE_VERSION;                                                                              // CHANGE AND IMPLEMENT ME
-   
-  Person () {
-    world.add(this);
-    this.index = world.indexOf(this);
-  }
-   
-  Person (ArrayList<Integer> t, ArrayList<Integer> s) {
-    this.teachers = t;
-    this.students = s;
-    world.add(this);
-    this.index = world.indexOf(this);
-  }
-  
-  void addTeacher (int t) {
-    this.teachers.add(t); 
-  }
-  
-  void addTeachers (ArrayList<Integer> t) {
-    this.teachers.addAll(t); 
-  }
-  
-  void addStudent (int s) {
-    this.students.add(s); 
-  }
-  
-  void addStudents (ArrayList<Integer> s) {
-    this.students.addAll(s); 
-  }
-  
-  String toString() {
-    return "[" + this.index + "] Teachers: " + teachers.toString() + "; Students: " + students.toString();
-  }
-  
+void mouseClicked() {
+  //infectRandom();
+  infectNextPeople();
 }
