@@ -23,17 +23,17 @@ Second, one-on-one tutors don't exist -- only classes.
 // config
 int lastUpdateTime;
 int tickTime = 100;
-int avgClassSize = 20; // each class is between (avgClassSize - classSizeDev)
+int avgClassSize = 30; // each class is between (avgClassSize - classSizeDev)
 int classSizeDev = 10;  //                   and (avgClassSize + classSizeDev)
 int minClassSize = avgClassSize - classSizeDev;
 int maxClassSize = avgClassSize + classSizeDev;
-int maxPeople = 10; // must be greater than maxClassSize
+int maxPeople = 100000; // must be greater than maxClassSize
 
-int pctOfStudentsWhoTeach = 10; // (out of 100) percentage of people who are both students and teachers
+int pctOfStudentsWhoTeach = 4; // (out of 100) percentage of people who are both students and teachers
 
 // how far +- is a student away from a teacher
 int positionDev = 15;
-int personSize = 5;
+int personSize = 3;
 
 // the world contains a list of Persons, but throughout the program
 // each Person will often be referred to by its index in world
@@ -52,6 +52,9 @@ void draw() {
   update();
   clear();
   drawPeople();
+  //diag();
+  fill(255,255,255);
+  //text("toBeInfected size: " + toBeInfected.size(), 10, 10);
 }
 
 void update() {
@@ -62,8 +65,11 @@ void update() {
 }
 
 void tick() {
-  //infectNextPeople();
-  //printWorld();
+  infectNextPeople();
+}
+
+void mouseClicked() {
+  //infectRandom();
 }
 
 void generateWorld () {
@@ -87,7 +93,7 @@ void generateWorld () {
     potentialWorldSize = world.size() + newestStudents.size();
   }
   infectRandom();
-  //printWorld();
+  printWorld();
 }
 
 ArrayList<Integer> generateStudentsForTeacher(Person teacher, int numStudents) {
@@ -136,12 +142,16 @@ ArrayList<Integer> makeStudentsOf (int teacher, int num) {
 void infect (int p) {
   Person person = world.get(p);
   person.infected = true;
-  //if (toBeInfected.contains(p)) {
-  //  toBeInfected.remove(p); 
-  //}
-  toBeInfected.clear();
-  toBeInfected.add(person.teacher);
-  toBeInfected.addAll(person.students);
+
+  if (!world.get(person.teacher).infected) {
+      toBeInfected.add(person.teacher);
+  }
+  
+  for (int s : person.students) {
+    if (!world.get(s).infected) {
+      toBeInfected.add(s);
+    }
+  }
 }
 
 void infectNextPeople() {
@@ -149,6 +159,7 @@ void infectNextPeople() {
   for (int p : toBeInfected) {
     tempToBeInfected.add(p);
   }
+  toBeInfected.clear();
   for (int p : tempToBeInfected) {
     infect(p);
   }
@@ -156,9 +167,4 @@ void infectNextPeople() {
 
 void infectRandom() {
   infect(randInt(0, world.size() - 1));
-}
-
-void mouseClicked() {
-  //infectRandom();
-  infectNextPeople();
 }
