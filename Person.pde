@@ -1,6 +1,7 @@
 class Person {
   
   int teacher; // teachers and students are stored as a list of indices
+  boolean hasTeacher = false;
   ArrayList<Integer> students = new ArrayList<Integer>(); // see above ;)
   
   boolean infected = false;
@@ -22,6 +23,7 @@ class Person {
   Person (int teacher) {
     this();
     this.teacher = teacher;
+    this.hasTeacher = true;
     this.px = world.get(teacher).px + randInt(-positionDev, positionDev);
     this.py = world.get(teacher).py + randInt(-positionDev, positionDev);
     this.constrainPosition();
@@ -37,6 +39,11 @@ class Person {
   void setPosition (int x, int y) {
     this.px = x;
     this.py = y;
+  }
+  
+  void setTeacher (int t) {
+    this.teacher = t;
+    this.hasTeacher = true;
   }
     
   void addStudent (int s) {

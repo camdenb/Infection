@@ -22,21 +22,21 @@ First, every person has at most one teacher.
 // config
 final boolean LIMIT_INFECTION = false;
 
-int lastUpdateTime;
 int tickTime = 10;
+int lastUpdateTime = tickTime + 1;
 int infectionPerTickLimit = 300;
 
 int minClassSize = 1; // these variables (more importantly average class size) are inversely proportional the the spread
-int maxClassSize = 35; // of the graph
-int maxPeople = 10000; // must be greater than maxClassSize
+int maxClassSize = 30; // of the graph
+int maxPeople = 50000; // must be greater than maxClassSize
 
 int pctOfStudentsWhoTeach = 5; // (out of 100) percentage of people who are both students and teachers this
                                // variable is inversely proportional to the visual spread of the graph
                                // by creating more "clusters" of quarantined people the lower it is
 
 // how far +- is a student away from a teacher
-int positionDev = 25;
-int personSize = 5;
+int positionDev = 20;
+int personSize = 4;
 int infectionAlpha = 40;
 
 int newestInfectionVersion = 0;
@@ -62,7 +62,6 @@ void draw() {
   background(0, 0, 255);
   drawPeople();
   fill(255,255,255);
-  text("tobeinfected size: " + toBeInfected.size(), 10, 10);
 }
 
 void update() {
@@ -78,6 +77,8 @@ void tick() {
 
 void mouseClicked() {
   startRandomInfection();
+  printWorld();
+  println("CLICKELD");
 }
 
 void generateWorld () {
@@ -100,7 +101,7 @@ void generateWorld () {
     newestStudents = tempStudents;
     potentialWorldSize = world.size() + newestStudents.size();
   }
-  //printWorld();
+  printWorld();
 }
 
 ArrayList<Integer> generateStudentsForTeacher(Person teacher, int numStudents) {

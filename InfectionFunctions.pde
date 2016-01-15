@@ -16,7 +16,8 @@ void infectAndSpread (int p, Infection i) {
   person.infected = true;
   person.infection = i;
 
-  infectNextIfAcceptable(person.teacher, i);
+  if (person.hasTeacher)
+    infectNextIfAcceptable(person.teacher, i);
   
   for (int s : person.students) {
     infectNextIfAcceptable(s, i);

@@ -2,12 +2,12 @@ class Infection {
   
   int version = 0;
   String flavorName = "1.0";
-  color hue;
+  color infColor;
   
   Infection() {
     this.version = newestInfectionVersion;
     newestInfectionVersion++;
-    this.hue = color(randInt(0,255), 255, 120, infectionAlpha);
+    this.infColor = color(randInt(0,255), 255, 120, infectionAlpha);
   }
   
   String generateFlavorName() {
