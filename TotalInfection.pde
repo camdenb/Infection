@@ -14,47 +14,55 @@ Notes:
 
 I've made a few assumptions in this program.
 First, every person has at most one teacher.
-Second, one-on-one tutors don't exist -- only classes.
 
 
 *************************************************************/
 
 
 // config
-int lastUpdateTime;
-int tickTime = 100;
-int avgClassSize = 30; // each class is between (avgClassSize - classSizeDev)
-int classSizeDev = 10;  //                   and (avgClassSize + classSizeDev)
-int minClassSize = avgClassSize - classSizeDev;
-int maxClassSize = avgClassSize + classSizeDev;
-int maxPeople = 100000; // must be greater than maxClassSize
+final boolean LIMIT_INFECTION = false;
 
-int pctOfStudentsWhoTeach = 4; // (out of 100) percentage of people who are both students and teachers
+int lastUpdateTime;
+int tickTime = 10;
+int infectionPerTickLimit = 300;
+
+int minClassSize = 1; // these variables (more importantly average class size) are inversely proportional the the spread
+int maxClassSize = 35; // of the graph
+int maxPeople = 10000; // must be greater than maxClassSize
+
+int pctOfStudentsWhoTeach = 5; // (out of 100) percentage of people who are both students and teachers this
+                               // variable is inversely proportional to the visual spread of the graph
+                               // by creating more "clusters" of quarantined people the lower it is
 
 // how far +- is a student away from a teacher
-int positionDev = 15;
-int personSize = 3;
+int positionDev = 25;
+int personSize = 5;
+int infectionAlpha = 40;
+
+int newestInfectionVersion = 0;
+Infection newestInfection;
 
 // the world contains a list of Persons, but throughout the program
 // each Person will often be referred to by its index in world
 ArrayList<Person> world = new ArrayList<Person>();
 
 // a list of people (in the form of world indices) who will be infected in the next tick
-ArrayList<Integer> toBeInfected = new ArrayList<Integer>();
+HashMap<Integer, Infection> toBeInfected = new HashMap<Integer, Infection>();
 
 void setup() {
   size(600, 600);
   generateWorld();
+  colorMode(HSB);
   lastUpdateTime = millis(); // get current time
 }  
 
 void draw() {
   update();
   clear();
+  background(0, 0, 255);
   drawPeople();
-  //diag();
   fill(255,255,255);
-  //text("toBeInfected size: " + toBeInfected.size(), 10, 10);
+  text("tobeinfected size: " + toBeInfected.size(), 10, 10);
 }
 
 void update() {
@@ -69,7 +77,7 @@ void tick() {
 }
 
 void mouseClicked() {
-  //infectRandom();
+  startRandomInfection();
 }
 
 void generateWorld () {
@@ -92,8 +100,7 @@ void generateWorld () {
     newestStudents = tempStudents;
     potentialWorldSize = world.size() + newestStudents.size();
   }
-  infectRandom();
-  printWorld();
+  //printWorld();
 }
 
 ArrayList<Integer> generateStudentsForTeacher(Person teacher, int numStudents) {
@@ -137,34 +144,4 @@ ArrayList<Integer> makeStudentsOf (int teacher, int num) {
   
   return students;
   
-}
-
-void infect (int p) {
-  Person person = world.get(p);
-  person.infected = true;
-
-  if (!world.get(person.teacher).infected) {
-      toBeInfected.add(person.teacher);
-  }
-  
-  for (int s : person.students) {
-    if (!world.get(s).infected) {
-      toBeInfected.add(s);
-    }
-  }
-}
-
-void infectNextPeople() {
-  ArrayList<Integer> tempToBeInfected = new ArrayList<Integer>();
-  for (int p : toBeInfected) {
-    tempToBeInfected.add(p);
-  }
-  toBeInfected.clear();
-  for (int p : tempToBeInfected) {
-    infect(p);
-  }
-}
-
-void infectRandom() {
-  infect(randInt(0, world.size() - 1));
 }

@@ -1,11 +1,10 @@
 void drawPeople() {
   ellipseMode(CORNER);
-  color uninfected = color(255, 0, 0, 50);
-  color infected = color(0, 255, 0, 50);
+  color uninfected = color(0, 0, 0, infectionAlpha);
   stroke(0,0,0,0);
   for (Person p : world) {
      if (p.infected) {
-       fill(infected);
+       fill(p.infection.hue);
      } else {
        fill(uninfected);
      }

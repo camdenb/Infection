@@ -2,7 +2,11 @@ class Person {
   
   int teacher; // teachers and students are stored as a list of indices
   ArrayList<Integer> students = new ArrayList<Integer>(); // see above ;)
+  
   boolean infected = false;
+  Infection infection;
+  Infection nextInfection;
+  
   int id = int(10000 + random(1) * 90000);
   int index;
   String SITE_VERSION;                                                     // CHANGE AND IMPLEMENT ME
