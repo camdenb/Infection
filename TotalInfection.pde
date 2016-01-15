@@ -15,7 +15,6 @@ Notes:
 I've made a few assumptions in this program.
 First, every person has at most one teacher.
 
-
 *************************************************************/
 
 
@@ -28,16 +27,18 @@ int infectionPerTickLimit = 300;
 
 int minClassSize = 1; // these variables (more importantly average class size) are inversely proportional the the spread
 int maxClassSize = 30; // of the graph
-int maxPeople = 50000; // must be greater than maxClassSize
+int maxPeople = 10000; // must be greater than maxClassSize
 
 int pctOfStudentsWhoTeach = 5; // (out of 100) percentage of people who are both students and teachers this
                                // variable is inversely proportional to the visual spread of the graph
                                // by creating more "clusters" of quarantined people the lower it is
 
-// how far +- is a student away from a teacher
-int positionDev = 20;
+
+int positionDev = 20; // how far +- is a student away from a teacher
 int personSize = 4;
 int infectionAlpha = 40;
+boolean showParents = true;
+int parentAlpha = 10;
 
 int newestInfectionVersion = 0;
 Infection newestInfection;
@@ -58,10 +59,12 @@ void setup() {
 
 void draw() {
   update();
-  clear();
+  //clear();
   background(0, 0, 255);
   drawPeople();
   fill(255,255,255);
+  if(newestInfection != null)
+    text("Current Infection: " + newestInfection.flavorName, 10, 10);
 }
 
 void update() {
@@ -77,8 +80,6 @@ void tick() {
 
 void mouseClicked() {
   startRandomInfection();
-  printWorld();
-  println("CLICKELD");
 }
 
 void generateWorld () {
@@ -101,7 +102,11 @@ void generateWorld () {
     newestStudents = tempStudents;
     potentialWorldSize = world.size() + newestStudents.size();
   }
-  printWorld();
+  //sortWorldByPosition();
+}
+
+void sortWorldByPosition() {
+  
 }
 
 ArrayList<Integer> generateStudentsForTeacher(Person teacher, int numStudents) {

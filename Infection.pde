@@ -8,13 +8,17 @@ class Infection {
     this.version = newestInfectionVersion;
     newestInfectionVersion++;
     this.infColor = color(randInt(0,255), 255, 120, infectionAlpha);
+    this.flavorName = generateFlavorName();
   }
   
   String generateFlavorName() {
     char[] alphabet = "abcdefghijklmnopqrstuvwxyz".toCharArray();
-    String part1 = "1";
-    if (percentDieRoll(30)) part1 += alphabet[randInt(0, alphabet.length)];
-    return "";
+    String str = "1.";
+    str += randInt(0, 999);
+    if (percentDieRoll(60)) str += "." + randInt(0,99);
+    if (percentDieRoll(70)) str += alphabet[randInt(0, alphabet.length - 1)];
+    if (percentDieRoll(60)) str += alphabet[randInt(0, alphabet.length - 1)];
+    return "Version " + str;
   }
   
 }

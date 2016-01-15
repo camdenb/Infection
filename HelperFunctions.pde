@@ -14,6 +14,6 @@ void printWorld() {
   
   println("-----------WORLD-----------");
   for (Person p : world) {
-   println(p); 
+   //println(p); 
   }
 }
