@@ -16,16 +16,10 @@ class Person {
   int py;
    
   Person () {
-    this(false); 
+     world.add(this);
+     this.index = world.indexOf(this);
   }
  
-  Person (boolean testObject) {
-    if (!testObject) {
-      world.add(this);
-      this.index = world.indexOf(this);
-    }
-  }
-  
   Person (int teacher) {
     this();
     this.teacher = teacher;
