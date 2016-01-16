@@ -10,11 +10,6 @@
                                                               
 Author: Camden Bickel
 
-Notes:
-
-I've made a few assumptions in this program.
-First, every person has at most one teacher.
-
 *************************************************************/
 
 
