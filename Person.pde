@@ -29,9 +29,9 @@ class Person implements Comparable<Person> {
   }
   
   void constrainPosition() {
-    if (this.px + personSize > width) this.px = width - personSize;
+    if (this.px + personSize > width) this.px = width - (int)personSize;
     if (this.px < panelSize) this.px = panelSize;
-    if (this.py + personSize > height) this.py = height - personSize;
+    if (this.py + personSize > height) this.py = height - (int)personSize;
     if (this.py < 0) this.py = 0;
   }
   

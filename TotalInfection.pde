@@ -18,49 +18,94 @@ First, every person has at most one teacher.
 *************************************************************/
 
 
-// config
-boolean LIMIT_INFECTION = false;
-int limitPercentIncrease = 10;
-int currentInfectionLimit = 0;
 
-int tickTime = 10;
-int lastUpdateTime = tickTime + 1;
+boolean LIMIT_INFECTION;
+int limitPercentIncrease;
+int currentInfectionLimit;
 
-int minClassSize = 1; // these variables (more importantly average class size) are inversely proportional the the spread
-int maxClassSize = 30; // of the graph
-int maxPeople = 10000; // must be greater than maxClassSize
+int tickTime;
+int lastUpdateTime;
 
-int pctOfStudentsWhoTeach = 5; // (out of 100) percentage of people who are both students and teachers this
-                               // variable is inversely proportional to the visual spread of the graph
-                               // by creating more "clusters" of quarantined people the lower it is
+int minClassSize;
+int maxClassSize;
+int maxPeople;
+
+int pctOfStudentsWhoTeach;
 
 
-int positionDev = 20; // how far +- is a student away from a teacher
-int personSize = 4;
-int infectionAlpha = 40;
-boolean showParents = true;
-int parentAlpha = 10;
+int positionDev;
+float personSize;
+int infectionAlpha;
+boolean showParents;
+int parentAlpha;
 
-int worldSpaceSize = 500;
-int panelSize = 300; //size of left-hand gui panel
+int worldSpaceSize;
+int panelSize;
 
-//stats!
-int totalInfected = 0;
+int totalInfected;
 
-
-int newestInfectionVersion = 0;
+int newestInfectionVersion;
 Infection newestInfection;
 
-// the world contains a list of Persons, but throughout the program
-// each Person will often be referred to by its index in world
-ArrayList<Person> world = new ArrayList<Person>();
+ArrayList<Person> world;
 
-// a list of people (in the form of world indices) who will be infected in the next tick
-HashMap<Integer, Infection> toBeInfected = new HashMap<Integer, Infection>();
+HashMap<Integer, Infection> toBeInfected;
+
+boolean randomDistributionMode;
+
+// global vars
+float personSizeIncrement = 0.2;
 
 void initAllVariables() {
   
+   // config
+   LIMIT_INFECTION = false;
+   limitPercentIncrease = 10;
+   currentInfectionLimit = 0;
   
+   tickTime = 10;
+   lastUpdateTime = tickTime + 1;
+  
+   maxPeople = 10000; // must be greater than maxClassSize
+   loadDistributionValues();
+ 
+   positionDev = 20; // how far +- is a student away from a teacher
+   personSize = 4;
+   infectionAlpha = 40;
+   showParents = false;
+   parentAlpha = 20;
+  
+   worldSpaceSize = 500;
+   panelSize = 300; //size of left-hand gui panel
+  
+  //stats!
+   totalInfected = 0;
+  
+  
+   newestInfectionVersion = 0;
+  
+  // the world contains a list of Persons, but throughout the program
+  // each Person will often be referred to by its index in world
+  world = new ArrayList<Person>();
+  
+  // a list of people (in the form of world indices) who will be infected in the next tick
+  toBeInfected = new HashMap<Integer, Infection>();
+  
+}
+
+void loadDistributionValues() {
+  minClassSize = 1;  // these variables (more importantly average class size) are inversely proportional the the spread
+  maxClassSize = 30; // of the graph
+  
+  pctOfStudentsWhoTeach = 5; // (out of 100) percentage of people who are both students and teachers this
+                                 // variable is inversely proportional to the visual spread of the graph
+                                 // by creating more "clusters" of quarantined people the lower it is
+                                 
+  if (randomDistributionMode) {
+    minClassSize = randInt(0,20);
+    maxClassSize = minClassSize + randInt(0, 30);
+    pctOfStudentsWhoTeach = randInt(1,20);
+  }
 }
 
 void setup() {
@@ -100,8 +145,9 @@ void draw() {
   update();
   //clear();
   background(0, 0, 255);
-  drawPanel();
+  
   drawPeople();
+  drawPanel();
   drawGUI();
 }
 
@@ -132,7 +178,27 @@ void mousePressed() {
 void keyReleased() {
   if (key == 'l') {
     showParents = !showParents;  
+  } else if (key == 'r') {
+    randomDistributionMode = false;
+    setup(); // restart! 
+  } else if (key == 'R') {
+    randomDistributionMode = true;
+    setup();
+  } else if (key == '-') {
+    addToPersonSize(-5);
+  } else if (key == '=') {
+    addToPersonSize(5);
   }
+}
+
+void mouseWheel(MouseEvent event) {
+  float e = event.getCount();
+  addToPersonSize((int) e);
+}
+
+void addToPersonSize(int multiplier) {
+  float amt = (float)((int)(100 * multiplier * personSizeIncrement)) / 100;
+  personSize += amt;
 }
 
 void generateWorld () {

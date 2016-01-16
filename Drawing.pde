@@ -14,7 +14,7 @@ void drawPeople() {
        if (p.infected) {
          stroke(hue(p.infection.infColor), saturation(p.infection.infColor), brightness(p.infection.infColor), parentAlpha);
        } else {
-         stroke(0,0,0,50);
+         stroke(0,0,0,parentAlpha);
        }
        strokeWeight(1);
        ellipseMode(CENTER);
