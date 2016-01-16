@@ -20,7 +20,7 @@ Most instructions are on-screen.
 
 ###Default Settings
 - Minimum class size is 1
-- Maxmimum class size is 30
+- Maximum class size is 30
 - The percentage of students who also teach is 5%
 - The total number of people in the world is 10,000 (give or take a few hundred)
 
