@@ -19,11 +19,12 @@ First, every person has at most one teacher.
 
 
 // config
-final boolean LIMIT_INFECTION = false;
+boolean LIMIT_INFECTION = false;
+int limitPercentIncrease = 10;
+int currentInfectionLimit = 0;
 
 int tickTime = 10;
 int lastUpdateTime = tickTime + 1;
-int infectionPerTickLimit = 300;
 
 int minClassSize = 1; // these variables (more importantly average class size) are inversely proportional the the spread
 int maxClassSize = 30; // of the graph
@@ -40,6 +41,13 @@ int infectionAlpha = 40;
 boolean showParents = true;
 int parentAlpha = 10;
 
+int worldSpaceSize = 500;
+int panelSize = 300; //size of left-hand gui panel
+
+//stats!
+int totalInfected = 0;
+
+
 int newestInfectionVersion = 0;
 Infection newestInfection;
 
@@ -50,21 +58,51 @@ ArrayList<Person> world = new ArrayList<Person>();
 // a list of people (in the form of world indices) who will be infected in the next tick
 HashMap<Integer, Infection> toBeInfected = new HashMap<Integer, Infection>();
 
+void initAllVariables() {
+  
+  
+}
+
 void setup() {
-  size(600, 600);
+  initAllVariables();
+  size(800, 500); //these should match worldSpaceSize and panelSize -- had to use magic nums :'(
+  runTests();
   generateWorld();
   colorMode(HSB);
   lastUpdateTime = millis(); // get current time
 }  
 
+
+
+void runTests() {
+  ArrayList<TestResult> testResults = new Tester().runAll();
+  
+  println(testResults.size() + " tests ran.");
+  
+  int successes = 0;
+  
+  for (TestResult tr : testResults) {
+    if (tr.success)
+      successes++;
+  }
+  
+  println(successes + " out of " + testResults.size() + " tests passed.");
+  
+  for (TestResult tr : testResults) {
+    if (!tr.success)
+      println(tr.message);
+  }
+  
+  world.clear();
+}
+
 void draw() {
   update();
   //clear();
   background(0, 0, 255);
+  drawPanel();
   drawPeople();
-  fill(255,255,255);
-  if(newestInfection != null)
-    text("Current Infection: " + newestInfection.flavorName, 10, 10);
+  drawGUI();
 }
 
 void update() {
@@ -78,15 +116,30 @@ void tick() {
   infectNextPeople();
 }
 
-void mouseClicked() {
-  startRandomInfection();
+void mousePressed() {
+  if (mouseButton == LEFT) {
+    startRandomInfection();
+  } else if (mouseButton == RIGHT) {
+    if (currentInfectionLimit == 0) {
+      LIMIT_INFECTION = true;
+    }
+    currentInfectionLimit = (currentInfectionLimit + limitPercentIncrease) % 100;
+    if (currentInfectionLimit == 0)
+      LIMIT_INFECTION = false;
+  }
+}
+
+void keyReleased() {
+  if (key == 'l') {
+    showParents = !showParents;  
+  }
 }
 
 void generateWorld () {
   
   // first person, has no students (yet) and no teachers (ever)
   Person firstPerson = new Person();
-  firstPerson.setPosition(randInt(0, width), randInt(0, height));
+  firstPerson.setPosition(randInt(panelSize, width), randInt(0, height));
   
   ArrayList<Integer> firstStudents = generateStudentsForTeacher(firstPerson, randInt(minClassSize, maxClassSize));
   ArrayList<Integer> newestStudents = possiblyMakeStudentsOfStudents(firstStudents);

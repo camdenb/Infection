@@ -1,4 +1,4 @@
-class Person {
+class Person implements Comparable<Person> {
   // Note: this class has a natural ordering that is inconsistent with equals.
   // Comparison only looks at position
   
@@ -16,10 +16,10 @@ class Person {
   int py;
    
   Person () {
-     world.add(this);
-     this.index = world.indexOf(this);
+    world.add(this);
+    this.index = world.indexOf(this);
   }
- 
+  
   Person (int teacher) {
     this();
     this.teacher = teacher;
@@ -30,7 +30,7 @@ class Person {
   
   void constrainPosition() {
     if (this.px + personSize > width) this.px = width - personSize;
-    if (this.px < 0) this.px = 0;
+    if (this.px < panelSize) this.px = panelSize;
     if (this.py + personSize > height) this.py = height - personSize;
     if (this.py < 0) this.py = 0;
   }
@@ -43,6 +43,7 @@ class Person {
   void setPosition (int x, int y) {
     this.px = x;
     this.py = y;
+    this.constrainPosition();
   }
   
   void setTeacher (int t) {
@@ -68,15 +69,15 @@ class Person {
     return infectedStr + "[" + this.index + "] Teacher: [" + teacher + "]; Students: " + students.toString();
   }
   
-  ////only compares position
-  //int compareTo(Person p) {
-  //    if (this.px == p.px && this.py == p.py) {
-  //      return 0; 
-  //    } else if (this.py > p.py || (this.py == p.py && this.px > p.px)) {
-  //      return 1;  
-  //    } else {
-  //      return -1; 
-  //    }
-  //}
+  //only compares position
+  int compareTo(Person p) {
+     if (this.px == p.px && this.py == p.py) {
+       return 0; 
+     } else if (this.py > p.py || (this.py == p.py && this.px > p.px)) {
+       return 1;  
+     } else {
+       return -1; 
+     }
+  }
   
 }
