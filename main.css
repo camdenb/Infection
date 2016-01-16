@@ -1,0 +1,38 @@
+body {
+  font-family: 'Helvetica', sans-serif;
+}
+
+.title {
+  text-align: center;
+  font-size: 50px;
+  margin-bottom: 0.5rem;
+}
+
+.info {
+  width: 50%;
+  display: block;
+  margin: 0 auto;
+  padding-bottom: 4rem;
+}
+
+canvas {
+  display: block;
+  margin: 0 auto;
+}
+
+.gh-link {
+  text-align: center;
+  margin-top: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:visited {
+  color: #16AEAB;
+}
+
+a:hover {
+  color: #146E69;
+}
