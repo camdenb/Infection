@@ -35,7 +35,7 @@ void drawPanel() {
   //draw border
   stroke(0,0,0);
   strokeWeight(5);
-  //line(panelSize, 0, panelSize - 5, height);
+  line(panelSize, 0, panelSize - 5, height);
   
 }
 

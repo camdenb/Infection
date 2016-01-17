@@ -8,7 +8,7 @@ class Tester {
   ArrayList<TestResult> runAll() {
     ArrayList<Test> allTests = new ArrayList<Test>();
     allTests.addAll(testPerson());
-    
+    allTests.addAll(testHelperFunctions());
     ArrayList<TestResult> results = new ArrayList<TestResult>();
     
     for (Test t : allTests) {
@@ -27,8 +27,16 @@ class Tester {
       
   }
   
-  boolean testHelperFunctions() {
-    return true; 
+  ArrayList<Test> testHelperFunctions() {
+    ArrayList<Test> tests = new ArrayList<Test>();
+    
+    tests.add(new Test(percentDieRoll(100), "percentDieRoll(100) should always be true"));
+    tests.add(new Test(!percentDieRoll(0), "percentDieRoll(0) should never be true"));
+    tests.add(new Test(randInt(5,5) == 5, "randInt(X,X) should always return X"));
+    tests.add(new Test(randInt(10,20) >= 10, "randInt(X,Y) should always be greater than or equal to X"));
+    tests.add(new Test(randInt(10,20) <= 20, "randInt(X,Y) should always be less than or equal to Y"));
+    
+    return tests;
   }
   
   ArrayList<Test> testPerson() {
@@ -51,13 +59,6 @@ class Tester {
     
     return tests;
   }
-  
-  boolean testInfection() {
-    return true;
-  }
-  
-  
-  
   
 }
 
