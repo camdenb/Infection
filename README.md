@@ -8,6 +8,8 @@
                                                               
 ```
 
+[Link to live project](http://www.camdenbickel.com/infection)
+
 Most instructions are on-screen.
 
 ###Controls:
