@@ -49,10 +49,10 @@ void drawGUI() {
     text("Limiting at: " + currentInfectionLimit + "% of Population Infected", 10, 140);
  
   
-  text("Total People (Estimated): ", 10, height - 20);
-  text("Minimum Class Size: ", 10, height - 40);
-  text("Maximum Class Size: ", 10, height - 60);
-  text("% of Students Who Also Teach: ", 10, height - 80);
+  text("Total People: " + world.size(), 10, height - 20);
+  text("Minimum Class Size: " + minClassSize, 10, height - 40);
+  text("Maximum Class Size: " + maxClassSize, 10, height - 60);
+  text("% of Students Who Also Teach: " + pctOfStudentsWhoTeach + "%", 10, height - 80);
   
   if(newestInfection != null) {
     text("Number of Infections So Far: " + (newestInfection.version + 1), 10, 80);
